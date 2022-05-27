@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, memo } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 
@@ -6,17 +6,14 @@ import s from './modal.module.css';
 
 const modalRoot = document.getElementById('modal-root');
 
-class Modal extends Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.closeModal);
-  }
+function Modal({ close, children }) {
+  useEffect(() => {
+    document.addEventListener('keydown', closeModal);
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.closeModal);
-  }
+    return () => document.removeEventListener('keydown', closeModal);
+  }, []);
 
-  closeModal = e => {
-    const { close } = this.props;
+  const closeModal = e => {
     if (e.code === 'Escape') {
       close();
       return;
@@ -25,19 +22,17 @@ class Modal extends Component {
       close();
     }
   };
-  render() {
-    const { children } = this.props;
-    return createPortal(
-      <div className={s.overlay} onClick={this.closeModal}>
-        <div className={s.modal}>{children}</div>
-      </div>,
-      modalRoot
-    );
-  }
+
+  return createPortal(
+    <div className={s.overlay} onClick={closeModal}>
+      <div className={s.modal}>{children}</div>
+    </div>,
+    modalRoot
+  );
 }
 
 Modal.propTypes = {
   close: PropTypes.func.isRequired,
 };
 
-export default Modal;
+export default memo(Modal);
