@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 
@@ -35,4 +35,4 @@ Modal.propTypes = {
   close: PropTypes.func.isRequired,
 };
 
-export default memo(Modal);
+export default Modal;
